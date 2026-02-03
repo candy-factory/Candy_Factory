@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-tw">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candy Factory</title>
+
+    <!-- favicon -->
+    <link rel="icon" href="../../assets/img/icon.png" />
+
+    <!-- icon font -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    />
+
+    <!-- base (global) styles -->
+    <link rel="stylesheet" href="../../css/base/reset.css" />
+    <link rel="stylesheet" href="../../css/base/style.css" />
+
+    <!-- page styles -->
+    <link rel="stylesheet" href="../../css/emotions/anxiety.css" />
+  </head>
+
+  <body>
+    <div>
+      <!--動畫-->
+      <div id="loading-screen">
+        <img src="../../assets/gif/Loading.gif" id="loader-gif" />
+      </div>
+      <!--動畫 end-->
+
+      <!--nav-->
+      <div class="nav">
+        <div class="logo-group">
+          <a href="../../index.html"
+            ><img
+              src="../../assets/img/CANDY FACTORY-LOGO-1.png"
+              alt="Candy Logo"
+              class="logo-img"
+          /></a>
+        </div>
+        <div class="menu">
+          <a href="../pages/about.html">ABOUT</a>
+          <a href="../pages/shop.html">SHOP</a>
+          <a href="../pages/contact.html">CONTACT</a>
+        </div>
+      </div>
+      <!--nav end-->
+    </div>
+
+    <!-- 操作說明按鈕 -->
+    <button class="hint-btn" id="openHint">操作說明</button>
+
+    <!-- 操作說明視窗 -->
+    <div class="hint-modal" id="hintModal">
+      <div class="hint-modal__content">
+        <button class="hint-modal__close" id="closeHint">×</button>
+        <h3>模型操作說明</h3>
+        <p>
+          -可使用滑鼠滾輪縮放<br />
+          -長按並左右拖曳可旋轉模型
+        </p>
+      </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="page-layout">
+      <!-- Left: 3D 模型 -->
+      <div class="left-view">
+        <canvas id="webgl"></canvas>
+      </div>
+
+      <!-- Right: 資訊卡 -->
+      <div class="right-info">
+        <div class="info-card" id="info-card">
+          <h1>焦慮 ANXIETY CANDY</h1>
+          <h3>成分</h3>
+          <p>
+            玉米糖漿：能量來源，加油，一起加班吧<br />
+            咖啡因：今晚通宵，除非心悸送醫<br />
+            對未來的擔憂：產品魅力所在<br />
+            神奇色素：真好看<br />
+            特製酸味香精：考試一般令人頭皮發麻<br />
+            明膠：與電腦黏膩到天亮
+          </p>
+
+          <h3>效果</h3>
+          <p>
+            倒就頭睡模式：再說吧，我先睡會兒<br />
+            卯起來幹模式：不行不行，趕不完就完蛋了<br />
+            災難片預告模式：世界毀滅吧
+          </p>
+
+          <h3>建議每日攝取量</h3>
+          <p>0，但你有這麼好命嗎？</p>
+
+          <h3>保存方式</h3>
+          <p>交報告前（越近越香）</p>
+
+          <!-- 購買按鈕 -->
+          <div class="buy-section">
+            <a href="./anxiety-tear.html" class="buy-btn">手刀購買</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D 模型 -->
+    <script type="module" src="../../js/emotions/anxiety.js"></script>
+  </body>
+</html>
