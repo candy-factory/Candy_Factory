@@ -1,0 +1,157 @@
+.text-stage {
+  position: relative;
+  width: 100%;
+  margin-top: 60px;
+}
+
+.about-text {
+  text-align: center;
+  width: 100%;
+  opacity: 0;
+  position: absolute;
+  transition: opacity 1s ease;
+}
+
+.about-text.active {
+  opacity: 1;
+}
+
+.scroll-hint {
+  opacity: 1;
+  transition: opacity 1s ease;
+}
+
+.scroll-hint.hide {
+  opacity: 0;
+}
+
+/* 輕微漂浮動畫 */
+@keyframes float {
+  0% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, -8px);
+  }
+  100% {
+    transform: translate(-50%, 0);
+  }
+}
+
+.float-item {
+  position: absolute;
+  pointer-events: none; /* 不擋點擊 */
+  will-change: transform;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* 各自給不同的節奏與路徑 */
+.f1 {
+  top: 40%;
+  left: 75%;
+  width: clamp(50px, 16vw, 280px);
+  animation:
+    float1 9s infinite ease-in-out,
+    spin1 18s linear infinite;
+}
+
+.f2 {
+  top: 20%;
+  left: 18%;
+  width: clamp(40px, 10vw, 200px);
+  animation:
+    float2 11s infinite ease-in-out,
+    spin2 22s linear infinite;
+}
+
+.f3 {
+  top: 50%;
+  left: 9%;
+  width: clamp(60px, 15vw, 260px);
+  animation:
+    float3 13s infinite ease-in-out,
+    spin3 26s linear infinite;
+}
+
+/* 漂浮 */
+@keyframes float1 {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes float2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(18px, -16px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes float3 {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-16px, -40px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* 旋轉 */
+@keyframes spin1 {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes spin2 {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: -360deg;
+  }
+}
+@keyframes spin3 {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+.enter-shop {
+  margin-top: 24px;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease;
+}
+
+.enter-shop.show {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.shop-btn {
+  padding: 12px 32px;
+  text-decoration: none;
+}
+
+.text-spacer {
+  height: 160px; /* 可微調，這就是文字區塊高度 */
+}
