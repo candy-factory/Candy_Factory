@@ -465,12 +465,7 @@ gltfLoader.load("../../assets/models/anxiety.glb", (gltf) => {
 
   candyRoot = gltf.scene;
 
-  // 與 B 版一致：只保留 scale
   candyRoot.scale.set(1.5, 1.5, 1.5);
-
-  // ❌ A 版的翻轉與下降全部移除
-  // candyRoot.position.y = -0.05;
-  // candyRoot.rotation.x = Math.PI;
 
   modelRoot.add(candyRoot);
   tryAlignWrapperAndCandy();
