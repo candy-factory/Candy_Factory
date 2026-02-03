@@ -1,0 +1,326 @@
+#webgl {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+
+#bubble-info {
+  position: absolute;
+  max-width: 340px;
+  padding: 20px 26px;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 16px;
+  color: white;
+  backdrop-filter: blur(10px);
+  transition: opacity 0.35s ease;
+  z-index: 20;
+  text-align: center;
+  display: none;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.tooltip::after {
+  content: attr(data-text);
+  white-space: pre-line;
+}
+
+.info-title {
+  margin-bottom: 2px;
+}
+
+.info-text {
+  margin-bottom: 10px;
+}
+
+.info-more {
+  width: 100%;
+  padding: 8px 0 10px 0;
+}
+
+.bubble-hint {
+  opacity: 0;
+}
+
+.label {
+  position: absolute;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  font-size: 0.8125rem;
+  color: white;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 30;
+
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.3),
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.sound-panel {
+  position: absolute;
+  left: 250px;
+  top: 380px;
+  transform: translate(-50%, -50%);
+  width: 200px;
+
+  padding: 20px 26px;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+  color: white;
+
+  display: none;
+  z-index: 2000;
+}
+
+.sound-panel.visible {
+  display: block;
+  opacity: 1;
+}
+.sound-panel.hidden {
+  display: block;
+  opacity: 0;
+}
+
+.sound-title {
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.sound-ui {
+  margin-top: 14px;
+  padding: 16px 14px;
+  border-radius: 16px;
+
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(14px) saturate(140%);
+
+  box-shadow:
+    0 0 16px rgba(255, 255, 255, 0.12),
+    inset 0 0 28px rgba(255, 255, 255, 0.15);
+}
+
+.sound-label {
+  display: block;
+  margin-bottom: 10px;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+}
+
+.mute-btn {
+  width: 100%;
+  padding: 8px 10px;
+}
+
+.sound-panel input[type="range"] {
+  width: 100%;
+  height: 40px;
+  border-radius: 999px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 2px solid white;
+  box-sizing: border-box;
+  padding: 0 10px;
+  display: flex;
+  cursor: pointer;
+  margin: 0 0 10px 0;
+  margin-bottom: 10px;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover 背景反白 */
+.sound-panel input[type="range"]:hover {
+  background: white;
+}
+
+/* ===== Chrome / Edge slider track ===== */
+
+.sound-panel input[type="range"]::-webkit-slider-runnable-track {
+  height: 100%;
+  background: transparent;
+  border-radius: 999px;
+}
+
+/* ===== Chrome / Edge 預設黑色滑塊 ===== */
+
+.sound-panel input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+
+  background: rgb(255, 255, 255);
+  border: none;
+  box-shadow: none;
+
+  display: flex;
+
+  transform: translateY(8.5px);
+
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Hover → 滑塊白色 */
+
+.sound-panel input[type="range"]:hover::-webkit-slider-thumb {
+  background: rgb(0, 0, 0);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  transform: translateY(8.5px) scale(1.1);
+}
+
+/* ===== 與按鈕統一間距 ===== */
+
+.sound-panel input[type="range"],
+.mute-btn {
+  margin-bottom: 10px;
+}
+
+.checkbox-btn {
+  width: 100%;
+  padding: 10px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.checkbox-btn input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkbox-btn span {
+  width: 100%;
+  text-align: center;
+  display: block;
+  position: relative;
+  z-index: 2;
+}
+
+.checkbox-btn:hover {
+  background: white;
+  color: black;
+}
+
+.checkbox-btn:has(input:checked)::before {
+  opacity: 1;
+}
+.checkbox-btn::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    90deg,
+    #ff3cac,
+    #784ba0,
+    #2b86c5,
+    #00ffd5,
+    #ffe600,
+    #ff8c00,
+    #ff3cac
+  );
+  background-size: 300% 300%;
+  filter: blur(12px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: rainbowGlow 3s linear infinite;
+  z-index: 0;
+}
+
+.checkbox-btn:has(input:checked) {
+  background: white;
+  color: black;
+}
+
+.checkbox-btn:has(input:checked):hover {
+  background: #cfcfcf;
+}
+
+/* 🌈 彩虹動畫 */
+@keyframes rainbowGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .info-more {
+    padding: 4.5px 0 8px 0;
+  }
+
+  .sound-panel {
+    width: 150px;
+    padding: 18px 20px;
+  }
+
+  .sound-panel input[type="range"] {
+    height: 30px;
+  }
+
+  .sound-panel input[type="range"]::-webkit-slider-thumb {
+    width: 15px;
+    height: 15px;
+    transform: translateY(6px);
+  }
+
+  .sound-panel input[type="range"]:hover::-webkit-slider-thumb {
+    transform: translateY(6px);
+    box-shadow: none;
+  }
+
+  .sound-panel input[type="range"] {
+    padding: 0 7.5px;
+  }
+
+  .label {
+    font-size: 0.625rem;
+  }
+
+  #bubble-info {
+    padding: 18px 20px;
+  }
+}
+
+/* ===== 觸控裝置：移除 hover / focus 視覺 ===== */
+@media (hover: none) and (pointer: coarse) {
+  .checkbox-btn:hover {
+    background: transparent;
+    color: white;
+  }
+
+  .sound-panel input[type="range"] {
+    outline: none;
+  }
+
+  .sound-panel input[type="range"]:hover,
+  .sound-panel input[type="range"]:focus,
+  .sound-panel input[type="range"]:active {
+    background: transparent;
+  }
+
+  .sound-panel input[type="range"]::-webkit-slider-thumb,
+  .sound-panel input[type="range"]:hover::-webkit-slider-thumb,
+  .sound-panel input[type="range"]:focus::-webkit-slider-thumb,
+  .sound-panel input[type="range"]:active::-webkit-slider-thumb {
+    background: white;
+    box-shadow: none;
+  }
+}
