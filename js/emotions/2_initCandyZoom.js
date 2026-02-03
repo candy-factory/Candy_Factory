@@ -4,7 +4,7 @@ export function initCandyZoom({ canvas, candy, options = {} }) {
     maxScale = 2.5,
     wheelSpeed = 0.001,
     pinchSpeed = 0.005,
-    dragSpeed = 0.005, // 單指拖動旋轉速度
+    dragSpeed = 0.002, // 單指拖動旋轉速度
   } = options;
 
   if (!canvas || !candy) return;
