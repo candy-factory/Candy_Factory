@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-tw">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candy Factory</title>
+
+    <!-- favicon -->
+    <link rel="icon" href="../../assets/img/icon.png" />
+
+    <!-- icon font -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    />
+
+    <!-- base (global) styles -->
+    <link rel="stylesheet" href="../../css/base/reset.css" />
+    <link rel="stylesheet" href="../../css/base/style.css" />
+
+    <!-- page styles -->
+    <link rel="stylesheet" href="../../css/pages/about.css" />
+  </head>
+
+  <body>
+    <div>
+      <!--動畫-->
+      <div id="loading-screen">
+        <img src="../../assets/gif/Loading.gif" id="loader-gif" />
+      </div>
+      <!--動畫 end-->
+
+      <!--nav-->
+      <div class="nav">
+        <div class="logo-group">
+          <a href="../../index.html"
+            ><img
+              src="../../assets/img/CANDY FACTORY-LOGO-1.png"
+              alt="Candy Logo"
+              class="logo-img"
+          /></a>
+        </div>
+        <div class="menu">
+          <a href="./about.html">ABOUT</a>
+          <a href="./shop.html">SHOP</a>
+          <a href="./contact.html">CONTACT</a>
+        </div>
+      </div>
+      <!--nav end-->
+    </div>
+
+    <!--candy area-->
+
+    <div class="candy">
+      <img src="../../assets/img/candy1.png" class="float-item f1" alt="" />
+      <img src="../../assets/img/candy2.png" class="float-item f2" alt="" />
+      <img src="../../assets/img/candy3.png" class="float-item f3" alt="" />
+    </div>
+    <!--candy end-->
+
+    <!--hero-->
+    <div class="hero">
+      <div class="text-stage">
+        <p class="text-normal active about-text">
+          <br />
+          歡迎來到情緒糖果工廠！<br />
+          在這裡，我們把那些不好吞、難以說出口的情緒，<br />
+          全部做成最可愛的糖果。
+        </p>
+
+        <p class="text-normal about-text">
+          「含著」比忍受更容易；<br />
+          「化開」比消化更輕鬆。<br />
+          既然情緒終究會入口，<br />
+          不如讓它變成糖果。<br />
+          苦也好、酸也好、甜也好，<br />
+          至少入口時，有味道陪伴。
+        </p>
+
+        <p class="text-normal about-text">
+          <br />
+          這就是我們存在的理由：<br />
+          讓每一個情緒，<br />
+          都能以更溫柔的方式被接受。
+        </p>
+        <div class="text-spacer"></div>
+        <div class="hint scroll-hint">滑動或滾動以繼續</div>
+        <div class="enter-shop">
+          <a href="shop.html" class="btn shop-btn">前往購買</a>
+        </div>
+      </div>
+    </div>
+    <!--hero end-->
+
+    <!-- js1 -->
+    <script>
+      const texts = document.querySelectorAll(".about-text");
+      const shopBtn = document.querySelector(".enter-shop");
+      const scrollHint = document.querySelector(".scroll-hint");
+      const stage = document.querySelector(".text-stage");
+
+      let index = 0;
+      let isScrolling = false;
+      let inputMode = "unknown"; // "mouse" | "touch"
+
+      // ===== 共用：切換文字 =====
+      function goNext(delta) {
+        texts[index].classList.remove("active");
+
+        index = Math.max(0, Math.min(index + delta, texts.length - 1));
+
+        texts[index].classList.add("active");
+
+        // 提示：第二頁就消失
+        if (index >= 1) {
+          scrollHint.classList.add("hide");
+        } else {
+          scrollHint.classList.remove("hide");
+        }
+
+        // 購買按鈕：最後一頁才出現
+        if (index === texts.length - 1) {
+          shopBtn.classList.add("show");
+        } else {
+          shopBtn.classList.remove("show");
+        }
+      }
+
+      // ===== 桌機：滑鼠滾輪 =====
+      window.addEventListener("wheel", (e) => {
+        if (isScrolling) return;
+
+        isScrolling = true;
+        goNext(e.deltaY > 0 ? 1 : -1);
+
+        setTimeout(() => {
+          isScrolling = false;
+        }, 1000);
+      });
+
+      // ===== 觸控：上下滑動 =====
+      let startY = 0;
+      const SWIPE_THRESHOLD = 50;
+
+      stage.addEventListener("touchstart", (e) => {
+        startY = e.touches[0].clientY;
+      });
+
+      stage.addEventListener("touchend", (e) => {
+        if (isScrolling) return;
+
+        const endY = e.changedTouches[0].clientY;
+        const deltaY = endY - startY;
+
+        if (Math.abs(deltaY) < SWIPE_THRESHOLD) return;
+
+        isScrolling = true;
+
+        if (deltaY > 0) {
+          // 手指往下 → 上一段
+          goNext(-1);
+        } else {
+          // 手指往上 → 下一段
+          goNext(1);
+        }
+
+        setTimeout(() => {
+          isScrolling = false;
+        }, 800);
+      });
+    </script>
+    <!-- js1 end -->
+
+    <!--js2 -->
+    <script>
+      const items = document.querySelectorAll(".float-item");
+
+      document.addEventListener("mousemove", (e) => {
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const dx = (e.clientX - cx) / cx;
+        const dy = (e.clientY - cy) / cy;
+
+        items.forEach((img, i) => {
+          const depth = (i + 1) * 10;
+          img.style.transform += ` translate(${dx * depth}px, ${dy * depth}px)`;
+        });
+      });
+    </script>
+    <!--js2 end-->
+  </body>
+</html>
