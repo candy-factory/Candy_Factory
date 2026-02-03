@@ -1,0 +1,396 @@
+/* =======================
+   Boring.css – 透明右半 + 磨砂卡，3/5:2/5
+   ======================= */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #050509;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  overflow: hidden; /* 首屏滿版 */
+}
+
+canvas {
+  touch-action: none;
+}
+
+/* 版面：左 3/5（模型）右 2/5（資訊） */
+.page-layout {
+  display: flex;
+  width: 100vw;
+  height: 100dvh;
+}
+.left-view {
+  width: 60vw;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* WebGL 畫布 → 全螢幕透明，確保不被切 */
+#webgl {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+  transform: translateX(-14vw) scale(1.2);
+  transform-origin: center;
+}
+
+/* 右半：完全透明（不蓋 3D） */
+.right-info {
+  width: 40vw;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: transparent;
+  overflow: hidden;
+  z-index: 2;
+  transform: translateX(-5vw);
+}
+
+/* 半透明磨砂卡牌（只卡牌本體有淡淡底，不擋 3D） */
+.info-card {
+  --tilt-rx: 0deg;
+  --tilt-ry: 0deg;
+  width: min(380px, 85%);
+  padding: 20px 24px 24px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.06); /* 柔淡底 */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+
+  transform-style: preserve-3d;
+  transform: perspective(800px) rotateX(var(--tilt-rx)) rotateY(var(--tilt-ry));
+  transition:
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+  position: relative;
+}
+.info-card:hover {
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* 邊緣柔光（很淡） */
+.info-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 18px;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      800px 300px at 0% 0%,
+      rgba(160, 200, 255, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(
+      800px 300px at 100% 100%,
+      rgba(120, 255, 220, 0.1),
+      transparent 60%
+    );
+}
+
+/* 文字（略小以免擠出） */
+.right-info h1 {
+  font-size: clamp(20px, 2vw, 28px);
+  margin-bottom: 14px;
+}
+.right-info h3 {
+  margin-top: 14px;
+  font-size: clamp(13px, 1.4vw, 15px);
+}
+.right-info p {
+  line-height: 1.6;
+  margin-top: 5px;
+  font-size: clamp(11px, 1.3vw, 14px);
+}
+
+/* 提示泡泡 */
+.hint {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 99;
+  color: #ccc;
+  font-size: 12px;
+  line-height: 1.4;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 10px;
+  border-radius: 6px;
+  user-select: none;
+}
+
+/* RWD：上下堆疊 */
+@media (max-width: 1024px) {
+  .page-layout {
+    flex-direction: column;
+  }
+  .left-view {
+    width: 100vw;
+    height: 55dvh;
+  }
+  .right-info {
+    width: 100vw;
+    height: 45dvh;
+  }
+  .info-card {
+    width: 90%;
+  }
+}
+@media (max-width: 600px) {
+  .left-view {
+    height: 50dvh;
+  }
+  .right-info {
+    height: 50dvh;
+  }
+  .info-card {
+    width: 88%;
+    padding: 18px 20px;
+    border-radius: 14px;
+  }
+}
+/* ===== 其他糖果卡牌區塊 ===== */
+html,
+body {
+  overflow-x: hidden;
+}
+body {
+  overflow-y: auto;
+}
+
+.page-layout {
+  min-height: 100vh;
+}
+
+.more-candy {
+  position: relative;
+  z-index: 3; /* 蓋過 3D 畫布 */
+  padding: 48px 6vw 96px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.25) 12%,
+    rgba(0, 0, 0, 0.35)
+  );
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.more-candy__title {
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media (max-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.candy-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 22px 18px;
+  text-decoration: none;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+.candy-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 56px rgba(0, 0, 0, 0.45);
+  border-color: rgba(255, 255, 255, 0.26);
+}
+
+.candy-card__imgwrap {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+}
+.candy-card__imgwrap img {
+  width: min(180px, 80%);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.45));
+  pointer-events: none;
+}
+
+.candy-card__meta {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.candy-card__meta h3 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+}
+.candy-card__meta span {
+  margin-top: 2px;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  opacity: 0.85;
+}
+
+/* ===== 購買按鈕區（泡泡緩動版） ===== */
+.buy-section {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.buy-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 40px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.04)
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  transition:
+    transform 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+    background 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+    border-color 0.8s ease;
+}
+
+.buy-btn:hover {
+  transform: scale(1.06);
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.08)
+  );
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 0 25px rgba(255, 255, 255, 0.35),
+    0 0 45px rgba(255, 255, 255, 0.2);
+}
+/* ===== 操作說明按鈕 ===== */
+.hint-btn {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 99;
+  padding: 12px 22px;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+/* ===== 彈出視窗背景 ===== */
+.hint-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: modalFadeIn 0.4s ease forwards;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* ===== 彈出視窗本體 ===== */
+.hint-modal__content {
+  position: relative;
+  width: min(320px, 86%);
+  padding: 20px 22px 24px;
+  border-radius: 16px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+.hint-modal__content {
+  width: min(300px, 90%);
+  padding: 32px 36px 36px;
+  line-height: 1.6;
+  border-radius: 24px;
+}
+
+.hint-modal__content p {
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+/* 關閉按鈕 */
+.hint-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+h3 {
+  font-weight: bold;
+  margin-bottom: 16px;
+  font-size: 24px;
+}
