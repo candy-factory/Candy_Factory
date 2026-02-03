@@ -1,0 +1,143 @@
+.like-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin-top: 40px;
+  margin-bottom: 32px;
+  user-select: none;
+}
+
+.like-group {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  user-select: none;
+}
+
+.like-btn {
+  width: 100px;
+  gap: 20px;
+  margin: 15px;
+  display: inline-block;
+  flex-direction: column;
+
+  --angle: 0deg;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  will-change: transform, box-shadow;
+}
+
+.like-btn.is-active {
+  background: #ffffff;
+  color: black;
+  border-color: #ffffff;
+  transform: scale(1.4) rotate(var(--angle));
+  box-shadow: 0 0 20px 8px hotpink;
+}
+
+.like-particle {
+  position: fixed;
+  transform: translate(0, 0) scale(1);
+  opacity: 1;
+  transition:
+    transform 0.8s ease,
+    opacity 0.8s ease;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.like-particle.fly {
+  transform: translate(var(--dx), var(--dy)) scale(1.5);
+  opacity: 0;
+}
+
+.like-toast {
+  font-size: 1rem;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.like-toast.show {
+  opacity: 1;
+}
+
+.result {
+  font-size: 1rem;
+  user-select: none;
+}
+
+.cry-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9997;
+}
+
+.cry-overlay.show {
+  opacity: 1;
+}
+
+.cry-overlay img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 80%;
+  height: auto;
+  transform: translate(-50%, -50%) scale(0.6);
+  opacity: 0;
+}
+
+.cry-overlay.show img {
+  animation: cry-pop 2s ease-out forwards;
+}
+
+@keyframes cry-pop {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0;
+  }
+
+  20% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .like-title {
+    font-size: 1.125rem;
+    margin-top: 40px;
+    margin-bottom: 10px;
+  }
+
+  .like-btn {
+    width: 80px;
+  }
+
+  .result {
+    font-size: 0.8125rem;
+  }
+
+  .like-toast {
+    font-size: 0.8125rem;
+  }
+}
