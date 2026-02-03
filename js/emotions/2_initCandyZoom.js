@@ -29,58 +29,56 @@ export function initCandyZoom({ canvas, candy, options = {} }) {
   let isDragging = false;
   let lastX = 0;
   let lastY = 0;
+  let lastDistance = null;
+
   const quat = candy.quaternion.clone();
 
-  function onTouchMove(e) {
-    e.preventDefault();
+  canvas.addEventListener("pointerdown", (e) => {
+    // 只處理 touch / pen（mouse 你可以留原本的）
+    if (e.pointerType === "mouse") return;
 
-    if (!isDragging || e.touches.length !== 1) return;
+    canvas.setPointerCapture(e.pointerId);
 
-    const x = e.touches[0].clientX;
-    const y = e.touches[0].clientY;
+    if (e.pointerType === "touch") {
+      isDragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    }
+  });
 
-    const dx = x - lastX;
-    const dy = y - lastY;
+  canvas.addEventListener("pointermove", (e) => {
+    if (!isDragging) return;
+    if (e.pointerType !== "touch") return;
+
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
 
     const qx = new THREE.Quaternion();
     const qy = new THREE.Quaternion();
 
-    qy.setFromAxisAngle(new THREE.Vector3(0, 1, 0), dx * 0.005);
-    qx.setFromAxisAngle(new THREE.Vector3(1, 0, 0), dy * 0.005);
+    qy.setFromAxisAngle(new THREE.Vector3(0, 1, 0), dx * dragSpeed);
+    qx.setFromAxisAngle(new THREE.Vector3(1, 0, 0), dy * dragSpeed);
 
     quat.premultiply(qy);
     quat.premultiply(qx);
 
     candy.quaternion.copy(quat);
 
-    lastX = x;
-    lastY = y;
-  }
-
-  function onTouchEnd() {
-    isDragging = false;
-    window.removeEventListener("touchmove", onTouchMove);
-    window.removeEventListener("touchend", onTouchEnd);
-  }
-
-  canvas.addEventListener("touchstart", (e) => {
-    if (e.touches.length !== 1) return;
-
-    isDragging = true;
-    lastX = e.touches[0].clientX;
-    lastY = e.touches[0].clientY;
-
-    window.addEventListener("touchmove", onTouchMove);
-    window.addEventListener("touchend", onTouchEnd);
+    lastX = e.clientX;
+    lastY = e.clientY;
   });
 
-  function onTouchEnd(e) {
-    if (e.touches.length === 0) {
-      isDragging = false;
-      lastDistance = null;
+  canvas.addEventListener("pointerup", (e) => {
+    if (e.pointerType !== "touch") return;
 
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
-    }
-  }
+    isDragging = false;
+    lastDistance = null;
+
+    canvas.releasePointerCapture(e.pointerId);
+  });
+
+  canvas.addEventListener("pointercancel", () => {
+    isDragging = false;
+    lastDistance = null;
+  });
 }
