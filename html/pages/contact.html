@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-tw">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candy Factory</title>
+
+    <!-- favicon -->
+    <link rel="icon" href="../../assets/img/icon.png" />
+
+    <!-- icon font -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    />
+
+    <!-- base (global) styles -->
+    <link rel="stylesheet" href="../../css/base/reset.css" />
+    <link rel="stylesheet" href="../../css/base/style.css" />
+
+    <!-- page styles -->
+    <link rel="stylesheet" href="../../css/pages/contact.css" />
+  </head>
+
+  <body>
+    <div>
+      <!--動畫-->
+      <div id="loading-screen">
+        <img src="../../assets/gif/Loading.gif" id="loader-gif" />
+      </div>
+      <!--動畫 end-->
+
+      <!--nav-->
+      <div class="nav">
+        <div class="logo-group">
+          <a href="../../index.html"
+            ><img
+              src="../../assets/img/CANDY FACTORY-LOGO-1.png"
+              alt="Candy Logo"
+              class="logo-img"
+          /></a>
+        </div>
+        <div class="menu">
+          <a href="./about.html">ABOUT</a>
+          <a href="./shop.html">SHOP</a>
+          <a href="./contact.html">CONTACT</a>
+        </div>
+      </div>
+      <!--nav end-->
+    </div>
+
+    <!-- 騙錢的 -->
+    <div class="hero">
+      <h1 class="page-title">CONTACT / MEDIA</h1>
+
+      <div class="link-group">
+        <a
+          href="https://www.youtube.com/@factorycandy"
+          class="btn media-btn"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="../../assets/img/youtube.png" alt="" />
+        </a>
+
+        <a
+          href="https://open.spotify.com/user/31bav5nn46cclnh5zx3wplqdxjhy?si=pqTNIo66QwSAw2M9o3LS2A"
+          class="btn media-btn"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="../../assets/img/spotify.png" alt="" />
+        </a>
+
+        <a
+          href="https://www.instagram.com/candy_factoryyy?igsh=NGl3bWJpaHkwMnRx&utm_source=qr"
+          class="btn media-btn"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="../../assets/img/instagram.png" alt="" />
+        </a>
+
+        <a class="btn media-btn donate" href="#">
+          <img src="../../assets/img/donate.png" alt="donate" />
+        </a>
+      </div>
+    </div>
+    <div class="money-rain"></div>
+    <!-- 騙錢的 end -->
+
+    <!--js1-->
+    <script>
+      const donateBtn = document.querySelector(".donate");
+      const rainBox = document.querySelector(".money-rain");
+
+      // 建立音效物件
+      const coinSound = new Audio("../../assets/sounds/coin.mp3");
+      coinSound.volume = 0.8; // 音量
+
+      let raining = false;
+
+      donateBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        // ✅ 立刻播音效
+        coinSound.currentTime = 0;
+        coinSound.play();
+
+        if (raining) return;
+        raining = true;
+
+        // 開始下金幣
+        const rainInterval = setInterval(createMoney, 50);
+
+        // 2 秒後停止
+        setTimeout(() => {
+          clearInterval(rainInterval);
+          raining = false;
+        }, 2000);
+      });
+
+      function createMoney() {
+        const coin = document.createElement("span");
+        coin.className = "money";
+        coin.textContent = "🪙";
+
+        coin.style.left = Math.random() * window.innerWidth + "px";
+
+        const duration = Math.random() * 1.2 + 1;
+        coin.style.animationDuration = duration + "s";
+
+        coin.style.fontSize = Math.random() * 12 + 18 + "px";
+
+        rainBox.appendChild(coin);
+        setTimeout(() => coin.remove(), duration * 1000);
+      }
+    </script>
+    <!--js1 end-->
+  </body>
+</html>
