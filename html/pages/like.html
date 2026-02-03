@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-tw">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candy Factory</title>
+
+    <!-- favicon -->
+    <link rel="icon" href="../../assets/img/icon.png" />
+
+    <!-- icon font -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    />
+
+    <!-- base (global) styles -->
+    <link rel="stylesheet" href="../../css/base/reset.css" />
+    <link rel="stylesheet" href="../../css/base/style.css" />
+
+    <!-- page styles -->
+    <link rel="stylesheet" href="../../css/pages/like.css" />
+  </head>
+
+  <body>
+    <div>
+      <!--動畫-->
+      <div id="loading-screen">
+        <img src="../../assets/gif/Loading.gif" id="loader-gif" />
+      </div>
+      <!--動畫 end-->
+
+      <!--nav-->
+      <div class="nav">
+        <div class="logo-group">
+          <a href="../../index.html"
+            ><img
+              src="../../assets/img/CANDY FACTORY-LOGO-1.png"
+              alt="Candy Logo"
+              class="logo-img"
+          /></a>
+        </div>
+        <div class="menu">
+          <a href="./about.html">ABOUT</a>
+          <a href="./shop.html">SHOP</a>
+          <a href="./contact.html">CONTACT</a>
+        </div>
+      </div>
+      <!--nav end-->
+    </div>
+
+    <div class="hero">
+      <h1 class="like-title">喜歡我們的糖果嗎？</h1>
+
+      <div class="like-group">
+        <button id="likeBtn" class="btn like-btn like">喜歡</button>
+        <button id="dislikeBtn" class="btn like-btn dislike">不喜歡</button>
+      </div>
+
+      <div class="result text">
+        👍 <span id="likeCount">0</span> &nbsp;&nbsp; 👎
+        <span id="dislikeCount">0</span>
+      </div>
+    </div>
+
+    <div class="cry-overlay">
+      <img src="../../assets/img/cry.png" alt="cry" />
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+    <script>
+      // ===== Supabase 設定 =====
+      const SUPABASE_URL = "https://eygnrqqqvfoziyvcretu.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5Z25ycXFxdmZveml5dmNyZXR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ4NTQ4NDcsImV4cCI6MjA4MDQzMDg0N30.G12FlQ6s0VN7EKyT636yxVCd8tSoXdfl0COMXhahXvs";
+
+      const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+      );
+
+      const TABLE_NAME = "votes";
+      const ROW_ID = 1;
+
+      const likeBtn = document.getElementById("likeBtn");
+      const dislikeBtn = document.getElementById("dislikeBtn");
+      const likeCountEl = document.getElementById("likeCount");
+      const dislikeCountEl = document.getElementById("dislikeCount");
+
+      let isVoting = false;
+      let messageCooldown = false;
+
+      // ===== 初始化抓票 =====
+      async function fetchCounts() {
+        const { data, error } = await supabaseClient
+          .from(TABLE_NAME)
+          .select("like, dislike")
+          .eq("id", ROW_ID)
+          .single();
+
+        if (error) {
+          console.error("fetchCounts error:", error);
+          return;
+        }
+
+        likeCountEl.textContent = data.like;
+        dislikeCountEl.textContent = data.dislike;
+      }
+
+      // ===== 投票（含防連點）=====
+      async function vote(type) {
+        if (isVoting) return;
+        isVoting = true;
+
+        const { data, error } = await supabaseClient
+          .from(TABLE_NAME)
+          .select(type)
+          .eq("id", ROW_ID)
+          .single();
+
+        if (error) {
+          console.error("vote fetch error:", error);
+          isVoting = false;
+          return;
+        }
+
+        const newCount = data[type] + 1;
+
+        const { error: updateError } = await supabaseClient
+          .from(TABLE_NAME)
+          .update({ [type]: newCount })
+          .eq("id", ROW_ID);
+
+        if (updateError) {
+          console.error("vote update error:", updateError);
+          isVoting = false;
+          return;
+        }
+
+        // 更新 UI
+        if (type === "like") likeCountEl.textContent = newCount;
+        else dislikeCountEl.textContent = newCount;
+
+        setTimeout(() => (isVoting = false), 400);
+      }
+
+      let criedOnce = false;
+      const cryOverlay = document.querySelector(".cry-overlay");
+
+      function triggerCry() {
+        if (criedOnce) return;
+
+        criedOnce = true;
+        cryOverlay.classList.add("show");
+
+        setTimeout(() => {
+          cryOverlay.classList.remove("show");
+        }, 2000);
+      }
+
+      dislikeBtn.addEventListener("click", () => {
+        vote("dislike");
+        triggerCry();
+      });
+
+      // ===== 點擊 nav 以外算 LIKE =====
+      document.addEventListener("click", (e) => {
+        const nav = document.querySelector(".nav");
+
+        if (nav && nav.contains(e.target)) return;
+        if (e.target === likeBtn || e.target === dislikeBtn) return;
+
+        vote("like");
+        showHiddenMessage();
+      });
+
+      // ===== 隱藏訊息 =====
+      function showHiddenMessage() {
+        if (messageCooldown) return;
+        messageCooldown = true;
+
+        const msg = document.createElement("div");
+        msg.className = "like-toast";
+        msg.textContent = "你已經喜歡了";
+
+        document.body.appendChild(msg);
+
+        requestAnimationFrame(() => msg.classList.add("show"));
+
+        setTimeout(() => msg.classList.remove("show"), 2000);
+        setTimeout(() => {
+          msg.remove();
+          messageCooldown = false;
+        }, 2500);
+      }
+
+      // ===== DISLIKE 逃跑 =====
+      (() => {
+        const nav = document.querySelector(".nav");
+        dislikeBtn.style.position = "fixed";
+        dislikeBtn.style.transition =
+          "left .25s cubic-bezier(.3,1.7,.5,1), top .25s";
+
+        function getSafeArea() {
+          const navRect = nav.getBoundingClientRect();
+          return {
+            x1: 20,
+            x2: window.innerWidth - dislikeBtn.offsetWidth - 20,
+            y1: navRect.bottom + 20,
+            y2: window.innerHeight - dislikeBtn.offsetHeight - 20,
+          };
+        }
+
+        function moveAway() {
+          const a = getSafeArea();
+          dislikeBtn.style.left = Math.random() * (a.x2 - a.x1) + a.x1 + "px";
+          dislikeBtn.style.top = Math.random() * (a.y2 - a.y1) + a.y1 + "px";
+        }
+
+        dislikeBtn.addEventListener("mouseenter", moveAway);
+        dislikeBtn.addEventListener("click", moveAway);
+        window.addEventListener("resize", moveAway);
+        window.addEventListener("load", moveAway);
+      })();
+
+      // ===== LIKE 特效 =====
+      likeBtn.addEventListener("click", (e) => {
+        vote("like");
+        likeExplosion(e.clientX, e.clientY);
+        showHiddenMessage();
+
+        const angle = Math.random() * 16 - 8;
+        likeBtn.style.setProperty("--angle", `${angle}deg`);
+        likeBtn.classList.add("is-active");
+
+        setTimeout(() => {
+          likeBtn.classList.remove("is-active");
+        }, 150);
+      });
+
+      // ===== LIKE 爆炸 =====
+      function likeExplosion(x, y) {
+        for (let i = 0; i < 20; i++) {
+          const p = document.createElement("div");
+          p.className = "like-particle";
+          p.textContent = Math.random() > 0.5 ? "💖" : "🍬";
+
+          p.style.left = x + "px";
+          p.style.top = y + "px";
+
+          document.body.appendChild(p);
+
+          const a = Math.random() * Math.PI * 2;
+          const d = 50 + Math.random() * 60;
+
+          requestAnimationFrame(() => {
+            p.style.setProperty("--dx", Math.cos(a) * d + "px");
+            p.style.setProperty("--dy", Math.sin(a) * d + "px");
+            p.classList.add("fly");
+          });
+
+          setTimeout(() => p.remove(), 800);
+        }
+      }
+
+      fetchCounts();
+    </script>
+  </body>
+</html>
