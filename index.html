@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-tw">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candy Factory</title>
+
+    <!-- favicon -->
+    <link rel="icon" href="./assets/img/icon.png" />
+
+    <!-- icon font -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    />
+
+    <!-- base (global) styles -->
+    <link rel="stylesheet" href="./css/base/reset.css" />
+    <link rel="stylesheet" href="./css/base/style.css" />
+
+    <!-- page styles -->
+    <link rel="stylesheet" href="./css/pages/index.css" />
+  </head>
+
+  <body>
+    <div id="rotate-hint" class="h1">
+      請旋轉設備<br />
+      以獲得完整互動體驗
+    </div>
+
+    <div>
+      <!--動畫-->
+      <div id="loading-screen">
+        <img src="./assets/gif/Loading.gif" id="loader-gif" />
+      </div>
+      <!--動畫 end-->
+
+      <!--nav-->
+      <div class="nav">
+        <div class="logo-group">
+          <a href="./index.html"
+            ><img
+              src="./assets/img/CANDY FACTORY-LOGO-1.png"
+              alt="Candy Logo"
+              class="logo-img"
+          /></a>
+        </div>
+        <div class="menu">
+          <a href="./html/pages/about.html">ABOUT</a>
+          <a href="./html/pages/shop.html">SHOP</a>
+          <a href="./html/pages/contact.html">CONTACT</a>
+        </div>
+      </div>
+      <!--nav end-->
+    </div>
+
+    <main class="hero"></main>
+
+    <!-- ==========================
+     泡泡資訊卡
+========================== -->
+    <div id="bubble-info">
+      <h1 id="info-title" class="info-title h1"></h1>
+      <p id="info-text" class="info-text text-small"></p>
+      <button id="info-more" class="btn info-more">了解更多</button>
+    </div>
+
+    <!-- ==========================
+     泡泡標籤資料區（隱藏）
+========================== -->
+
+    <div id="bubble-labels-data" style="display: none">
+      <div data-index="0">MUSIC</div>
+      <div data-index="1">SHOP</div>
+      <div data-index="2">CONTACT</div>
+      <div data-index="3">ABOUT</div>
+      <div data-index="4">???</div>
+    </div>
+
+    <!-- ==========================
+     泡泡資料區（隱藏）
+========================== -->
+    <div id="bubble-info-data" style="display: none">
+      <div data-index="0" data-title="music" data-text="" data-url="#"></div>
+
+      <div
+        data-index="1"
+        data-title="SHOP"
+        data-text="進入商店選購商品。"
+        data-url="./html/pages/shop.html"
+      ></div>
+      <div
+        data-index="2"
+        data-title="CONTACT"
+        data-text="留下訊息，與我們合作或交流。"
+        data-url="./html/pages/contact.html"
+      ></div>
+      <div
+        data-index="3"
+        data-title="ABOUT"
+        data-text="了解我們的設計理念與方向。"
+        data-url="./html/pages/about.html"
+      ></div>
+      <div
+        data-index="4"
+        data-title="哎呀!被你找到了"
+        data-text="something special here!"
+        data-btn="打開看看?"
+        data-url="./html/pages/like.html"
+      ></div>
+    </div>
+
+    <!-- ==========================
+     音效控制面板
+========================== -->
+    <div id="soundPanel" class="sound-panel h1">
+      <div class="sound-title h1">BGM 音量</div>
+      <input
+        id="bgm-volume"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value="0.6"
+      />
+      <button id="bgm-mute" class="mute-btn btn">靜音</button>
+      <label class="checkbox-btn btn">
+        <input type="checkbox" id="bubble-dance" />
+        <span>讓泡泡跳舞?</span>
+      </label>
+    </div>
+
+    <div id="bubble-hint" class="hint bubble-hint">點擊泡泡返回</div>
+
+    <canvas id="webgl"></canvas>
+    <script type="module" src="./js/index.js"></script>
+  </body>
+</html>
