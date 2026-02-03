@@ -3,7 +3,7 @@ import { SVGLoader } from "https://esm.sh/three/examples/jsm/loaders/SVGLoader.j
 import { GLTFLoader } from "https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js";
 import { gsap } from "https://esm.sh/gsap";
 
-const BASE = location.hostname.includes("github.io") ? "/candy-factory-v2" : "";
+const BASE = location.hostname.includes("github.io") ? "/Candy_Factory" : "";
 
 let infoFollowLock = false;
 let activeBubble = null;
