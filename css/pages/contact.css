@@ -1,0 +1,108 @@
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.8;
+  letter-spacing: 3px;
+  margin-top: 40px;
+  margin-bottom: 32px;
+  user-select: none;
+}
+
+.link-group {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.media-btn img {
+  height: 25px;
+}
+
+.donate img {
+  height: 26px;
+}
+
+.media-btn {
+  display: flex;
+}
+
+.media-btn:hover img {
+  filter: invert(1);
+}
+
+/* 金幣雨容器 */
+.money-rain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  overflow: hidden;
+}
+
+/* 金幣 */
+.money {
+  position: absolute;
+  top: -30px;
+  font-size: 22px;
+  animation: fall linear forwards;
+  user-select: none;
+}
+
+/* 金幣落下動畫 */
+@keyframes fall {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(110vh);
+  }
+}
+
+/*mobile adjustments*/
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:focus {
+  outline: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+@media (hover: none) {
+  .btn:hover {
+    background: transparent;
+    color: white;
+  }
+
+  .media-btn:hover img {
+    filter: invert(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.125rem;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+
+  .link-group {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .media-btn img {
+    height: 20px;
+  }
+
+  .donate img {
+    height: 21px;
+  }
+}
