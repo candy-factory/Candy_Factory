@@ -1,84 +1,90 @@
-export function initCandyZoom({ canvas, candy, options = {} }) {
-  const {
-    minScale = 0.5,
-    maxScale = 2.5,
-    wheelSpeed = 0.001,
-    pinchSpeed = 0.005,
-    dragSpeed = 0.002, // 單指拖動旋轉速度
-  } = options;
+import * as THREE from "https://esm.sh/three";
 
-  if (!canvas || !candy) return;
-
-  // ========= 滑鼠滾輪縮放 =========
-  function zoomByDelta(delta) {
-    const scaleDelta = 1 - delta * wheelSpeed;
-    candy.scale.multiplyScalar(scaleDelta);
-    candy.scale.clampScalar(minScale, maxScale);
-  }
-
-  canvas.addEventListener(
-    "wheel",
-    (e) => {
-      e.preventDefault();
-      zoomByDelta(e.deltaY);
-    },
-    { passive: false },
-  );
-
-  // ========= 觸控 =========
+/* =====================================================
+   初始化互動
+   說明：
+   - modelRoot, camera 必須在 anxiety.js 已定義
+   - 可調整 rotateSpeed / zoomSpeed
+===================================================== */
+export function initCandyZoom(modelRoot, camera) {
   let isDragging = false;
   let lastX = 0;
   let lastY = 0;
-  let lastDistance = null;
 
-  const quat = candy.quaternion.clone();
+  let touchDist = 0; // 兩指距離
+  let initialZoom = 0;
 
-  canvas.addEventListener("pointerdown", (e) => {
-    // 只處理 touch / pen（mouse 你可以留原本的）
-    if (e.pointerType === "mouse") return;
+  const rotateSpeed = 0.01;
+  const zoomSpeed = 0.5;
 
-    canvas.setPointerCapture(e.pointerId);
-
-    if (e.pointerType === "touch") {
-      isDragging = true;
-      lastX = e.clientX;
-      lastY = e.clientY;
-    }
-  });
-
-  canvas.addEventListener("pointermove", (e) => {
+  // ---------- 單指 / 滑鼠拖曳 ----------
+  function startDrag(x, y) {
+    isDragging = true;
+    lastX = x;
+    lastY = y;
+  }
+  function moveDrag(x, y) {
     if (!isDragging) return;
-    if (e.pointerType !== "touch") return;
+    const dx = x - lastX;
+    const dy = y - lastY;
+    lastX = x;
+    lastY = y;
+    modelRoot.rotation.y += dx * rotateSpeed;
+    modelRoot.rotation.x += dy * rotateSpeed;
+  }
+  function endDrag() {
+    isDragging = false;
+  }
 
-    const dx = e.clientX - lastX;
-    const dy = e.clientY - lastY;
+  // ---------- 雙指縮放 ----------
+  function getDistance(touch1, touch2) {
+    const dx = touch2.clientX - touch1.clientX;
+    const dy = touch2.clientY - touch1.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
 
-    const qx = new THREE.Quaternion();
-    const qy = new THREE.Quaternion();
+  function pinchStart(touches) {
+    if (touches.length < 2) return;
+    touchDist = getDistance(touches[0], touches[1]);
+    initialZoom = camera.position.z;
+  }
+  function pinchMove(touches) {
+    if (touches.length < 2) return;
+    const newDist = getDistance(touches[0], touches[1]);
+    const delta = (touchDist - newDist) * 0.01; // 調整縮放敏感度
+    camera.position.z = THREE.MathUtils.clamp(initialZoom + delta, 3, 25);
+  }
 
-    qy.setFromAxisAngle(new THREE.Vector3(0, 1, 0), dx * dragSpeed);
-    qx.setFromAxisAngle(new THREE.Vector3(1, 0, 0), dy * dragSpeed);
+  // ---------- 滑鼠事件 ----------
+  window.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "touch" && e.isPrimary === false) return; // 非主手指 ignore
+    startDrag(e.clientX, e.clientY);
+  });
+  window.addEventListener("pointermove", (e) => {
+    if (e.pointerType === "touch" && e.isPrimary === false) return;
+    moveDrag(e.clientX, e.clientY);
+  });
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointercancel", endDrag);
 
-    quat.premultiply(qy);
-    quat.premultiply(qx);
-
-    candy.quaternion.copy(quat);
-
-    lastX = e.clientX;
-    lastY = e.clientY;
+  // ---------- 觸控事件 ----------
+  window.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 1)
+      startDrag(e.touches[0].clientX, e.touches[0].clientY);
+    if (e.touches.length === 2) pinchStart(e.touches);
+  });
+  window.addEventListener("touchmove", (e) => {
+    if (e.touches.length === 1)
+      moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+    if (e.touches.length === 2) pinchMove(e.touches);
+  });
+  window.addEventListener("touchend", (e) => {
+    if (e.touches.length === 0) endDrag();
   });
 
-  canvas.addEventListener("pointerup", (e) => {
-    if (e.pointerType !== "touch") return;
-
-    isDragging = false;
-    lastDistance = null;
-
-    canvas.releasePointerCapture(e.pointerId);
-  });
-
-  canvas.addEventListener("pointercancel", () => {
-    isDragging = false;
-    lastDistance = null;
+  // ---------- 滑輪縮放 ----------
+  window.addEventListener("wheel", (e) => {
+    camera.position.z += Math.sign(e.deltaY) * zoomSpeed;
+    camera.position.z = THREE.MathUtils.clamp(camera.position.z, 3, 25);
   });
 }
