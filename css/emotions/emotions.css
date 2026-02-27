@@ -1,0 +1,183 @@
+canvas {
+  touch-action: none;
+}
+
+/* 左 3/5（模型）右 2/5（資訊） */
+.page-layout {
+  display: flex;
+  width: 100vw;
+  height: 100dvh;
+}
+.left-view {
+  width: 60vw;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* WebGL畫透明 */
+#webgl {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+  transform: translateX(-14vw) scale(1.2);
+  transform-origin: center;
+}
+
+/* 右半：完全透明（不蓋 3D） */
+.right-info {
+  width: 40vw;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: transparent;
+  overflow: hidden;
+  z-index: 2;
+  transform: translateX(-5vw);
+}
+
+/* 半透明磨砂卡牌（只卡牌本體有淡淡底，不擋 3D） */
+.info-card {
+  --tilt-rx: 0deg;
+  --tilt-ry: 0deg;
+  width: min(380px, 85%);
+  padding: 20px 24px 24px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.06); /* 柔淡底 */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+
+  transform-style: preserve-3d;
+  transform: perspective(800px) rotateX(var(--tilt-rx)) rotateY(var(--tilt-ry));
+  transition:
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+  position: relative;
+}
+.info-card:hover {
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* 邊緣柔光（很淡） */
+.info-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 18px;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      800px 300px at 0% 0%,
+      rgba(160, 200, 255, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(
+      800px 300px at 100% 100%,
+      rgba(120, 255, 220, 0.1),
+      transparent 60%
+    );
+}
+
+/* 文字（略小以免擠出） */
+.right-info h1 {
+  font-size: clamp(20px, 2vw, 28px);
+  margin-bottom: 14px;
+}
+.right-info h3 {
+  margin-top: 14px;
+  font-size: clamp(13px, 1.4vw, 15px);
+}
+.right-info p {
+  line-height: 1.6;
+  margin-top: 5px;
+  font-size: clamp(11px, 1.3vw, 14px);
+}
+
+.hint-btn {
+  position: fixed;
+  left: 40px;
+  bottom: 40px;
+  z-index: 50;
+}
+
+/* 彈出視窗背景 */
+.hint-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.hint-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 彈出視窗本體 */
+.hint-modal-content {
+  position: relative;
+  width: min(300px, 90%);
+  padding: 32px 36px 36px;
+  border-radius: 24px;
+
+  color: #fff;
+  line-height: 1.6;
+  text-align: center;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.hint-text {
+  margin-bottom: 10px;
+}
+
+.hint-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* 購買按鈕區（泡泡緩動版 */
+.buy-section {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.buy-btn {
+  text-decoration: none;
+
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.04)
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  transition:
+    transform 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+    background 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+    border-color 0.8s ease;
+}
