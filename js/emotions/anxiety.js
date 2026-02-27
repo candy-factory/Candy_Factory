@@ -1,11 +1,27 @@
 import * as THREE from "https://esm.sh/three";
 import { GLTFLoader } from "https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js";
-import { initCandyZoom } from "./2_initCandyZoom.js";
 import { initHintModal, initInfoCardTilt } from "./1_base.js";
+import { initCandyZoom } from "../emotions/2_initCandyZoom.js";
 
+/* =====================================================
+   Renderer（全螢幕透明）
+===================================================== */
 const canvas = document.getElementById("webgl");
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+  alpha: true,
+});
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+renderer.setClearColor(0x000000, 0.0); // 透明
+renderer.physicallyCorrectLights = true;
 
-// ======= Scene / Camera / Renderer =======
+/* =====================================================
+   Scene / Camera（背景透明）
+===================================================== */
 const scene = new THREE.Scene();
 scene.background = null;
 
@@ -16,18 +32,6 @@ const camera = new THREE.PerspectiveCamera(
   500,
 );
 camera.position.set(0, 0, 6);
-
-const renderer = new THREE.WebGLRenderer({
-  canvas,
-  antialias: true,
-  alpha: true,
-});
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
-renderer.setClearColor(0x000000, 0.0);
-renderer.physicallyCorrectLights = true;
 
 /* =====================================================
    Lights
@@ -56,7 +60,7 @@ let rtCandy = new THREE.WebGLRenderTarget(
 );
 
 /* =====================================================
-   Materials（沿用你原本的 shader）
+   Materials
 ===================================================== */
 const bubbleMaterial = new THREE.ShaderMaterial({
   transparent: true,
@@ -248,12 +252,9 @@ void main() {
   `,
 });
 
-// =====================================================
-// Wrapper 虹光 + 折射 Shader
-// =====================================================
-// =====================================================
-// Wrapper 虹光 + 折射 Shader（加強白色高光帶版）
-// =====================================================
+/* =====================================================
+   Wrapper 虹光 + 折射 Shader
+===================================================== */
 function createIridescentMaterial(alpha = 0.2) {
   return new THREE.ShaderMaterial({
     side: THREE.FrontSide,
@@ -261,10 +262,10 @@ function createIridescentMaterial(alpha = 0.2) {
     depthWrite: false,
     depthTest: true,
     uniforms: {
-      uGloss: { value: 260.0 }, // 高光銳度
-      uIriStrength: { value: 1.0 }, // 彩虹強度
+      uGloss: { value: 260.0 },
+      uIriStrength: { value: 1.0 },
       uIriSaturation: { value: 0.55 },
-      uBaseStrength: { value: 0.02 }, // 超薄底光
+      uBaseStrength: { value: 0.02 },
       uAlpha: { value: alpha },
       uCandyTex: { value: null },
       uRefractPow: { value: 0.035 },
@@ -368,6 +369,7 @@ function createIridescentMaterial(alpha = 0.2) {
     `,
   });
 }
+
 /* =====================================================
    Scene graph
 ===================================================== */
@@ -386,7 +388,7 @@ modelRoot.add(wrapperGroup);
 let decoRoot = null;
 
 /* =====================================================
-   Particles（保留你的外圍微光粒子）
+   Particles
 ===================================================== */
 const particleCount = 60;
 const particleRadius = 2.6;
@@ -453,6 +455,7 @@ modelRoot.add(particles);
 ===================================================== */
 const gltfLoader = new GLTFLoader();
 
+// --------- 糖果模型 ---------
 gltfLoader.load("../../assets/models/anxiety.glb", (gltf) => {
   gltf.scene.traverse((child) => {
     if (child.isMesh) {
@@ -464,13 +467,17 @@ gltfLoader.load("../../assets/models/anxiety.glb", (gltf) => {
   });
 
   candyRoot = gltf.scene;
-
   candyRoot.scale.set(1.5, 1.5, 1.5);
-
   modelRoot.add(candyRoot);
   tryAlignWrapperAndCandy();
+
+  // ======= 初始化滑鼠 / 觸控互動 =======
+  if (window.initCandyZoom) {
+    window.initCandyZoom({ modelRoot, candyRoot, camera, renderer });
+  }
 });
 
+// --------- 包裝模型 ---------
 gltfLoader.load("../../assets/models/container_3.glb", (gltf) => {
   const group = new THREE.Group();
   gltf.scene.traverse((child) => {
@@ -501,6 +508,7 @@ gltfLoader.load("../../assets/models/container_3.glb", (gltf) => {
   tryAlignWrapperAndCandy();
 });
 
+// --------- 裝飾模型 ---------
 gltfLoader.load("../../assets/models/deco-4.glb", (gltf) => {
   decoRoot = gltf.scene;
   decoRoot.position.set(-0.55, 0.05, -0.13);
@@ -544,6 +552,9 @@ function tryAlignWrapperAndCandy() {
   if (!frameOnceDone) {
     frameOnceDone = true;
     safeFrame();
+
+    // 初始化互動
+    initCandyZoom(modelRoot, camera);
   }
 }
 
@@ -598,44 +609,6 @@ function safeFrame() {
   });
 }
 
-/* 快捷鍵：R 復位 */
-window.addEventListener("keydown", (e) => {
-  if (e.key.toLowerCase() === "r") safeFrame();
-});
-
-/* =====================================================
-   Interaction（拖曳旋轉 / 滾輪縮放）
-===================================================== */
-let isDragging = false;
-let lastX = 0,
-  lastY = 0;
-
-window.addEventListener("pointerdown", (e) => {
-  isDragging = true;
-  lastX = e.clientX;
-  lastY = e.clientY;
-});
-window.addEventListener("pointerup", () => {
-  isDragging = false;
-});
-window.addEventListener("pointermove", (e) => {
-  if (!isDragging) return;
-  const dx = e.clientX - lastX;
-  const dy = e.clientY - lastY;
-  lastX = e.clientX;
-  lastY = e.clientY;
-  modelRoot.rotation.y += dx * 0.01;
-  modelRoot.rotation.x += dy * 0.01;
-});
-
-/* =====================================================
-   3D糖果（拖曳旋轉 / 滾輪縮放）
-===================================================== */
-window.addEventListener("wheel", (e) => {
-  camera.position.z += Math.sign(e.deltaY) * 0.5;
-  camera.position.z = THREE.MathUtils.clamp(camera.position.z, 3, 25);
-});
-
 /* =====================================================
    Animation（兩階段渲染：糖果 → 全景）
 ===================================================== */
@@ -677,13 +650,14 @@ function animate() {
 animate();
 
 /* =====================================================
-   Resize（整窗）
+   Resize
 ===================================================== */
 window.addEventListener("resize", () => {
-  const w = window.innerWidth,
-    h = window.innerHeight;
-  renderer.setSize(w, h);
+  const w = window.innerWidth;
+  const h = window.innerHeight;
   camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
   camera.updateProjectionMatrix();
   if (rtCandy) rtCandy.setSize(w, h);
 
@@ -691,5 +665,13 @@ window.addEventListener("resize", () => {
   setTimeout(safeFrame, 0);
 });
 
-/* 首屏保險：等 1 幀後做一次取景（避免尚未 ready） */
+// 首屏保險
 requestAnimationFrame(() => setTimeout(safeFrame, 0));
+
+/* =====================================================
+   DOM 操作說明初始化(Hint Modal)
+===================================================== */
+
+window.addEventListener("DOMContentLoaded", () => {
+  initHintModal();
+});
