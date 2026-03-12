@@ -67,24 +67,33 @@ export function initCandyZoom(modelRoot, camera) {
   window.addEventListener("pointerup", endDrag);
   window.addEventListener("pointercancel", endDrag);
 
-  // ---------- 觸控事件 ----------
-  window.addEventListener("touchstart", (e) => {
-    if (e.touches.length === 1)
-      startDrag(e.touches[0].clientX, e.touches[0].clientY);
-    if (e.touches.length === 2) pinchStart(e.touches);
-  });
-  window.addEventListener("touchmove", (e) => {
-    if (e.touches.length === 1)
-      moveDrag(e.touches[0].clientX, e.touches[0].clientY);
-    if (e.touches.length === 2) pinchMove(e.touches);
-  });
-  window.addEventListener("touchend", (e) => {
-    if (e.touches.length === 0) endDrag();
-  });
-
   // ---------- 滑輪縮放 ----------
   window.addEventListener("wheel", (e) => {
     camera.position.z += Math.sign(e.deltaY) * zoomSpeed;
     camera.position.z = THREE.MathUtils.clamp(camera.position.z, 3, 25);
   });
 }
+
+// 禁止滑鼠滾輪滾動頁面
+window.addEventListener(
+  "wheel",
+  (e) => {
+    e.preventDefault();
+  },
+  { passive: false },
+);
+
+// 選出可滾動區塊
+const scrollContainer = document.querySelector(".card-scroll");
+
+// 阻止全局滑動
+document.body.addEventListener(
+  "touchmove",
+  (e) => {
+    // 如果滑動的 target 是可滾動區塊或其子元素，放行
+    if (!scrollContainer.contains(e.target)) {
+      e.preventDefault();
+    }
+  },
+  { passive: false },
+);
