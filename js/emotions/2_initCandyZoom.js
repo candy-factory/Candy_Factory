@@ -97,3 +97,43 @@ document.body.addEventListener(
   },
   { passive: false },
 );
+
+const { OverlayScrollbars } = OverlayScrollbarsGlobal;
+
+OverlayScrollbars(document.querySelector("#scroll-container"), {});
+
+OverlayScrollbars(document.querySelector("#scroll-container"), {
+  scrollbars: {
+    autoHide: "never",
+  },
+});
+
+OverlayScrollbars(document.querySelector("#scroll-container"), {
+  scrollbars: {
+    autoHide: "never",
+  },
+  overflow: {
+    x: "hidden",
+    y: "scroll",
+  },
+});
+
+OverlayScrollbars(document.querySelector("#scroll-container"), {
+  scrollbars: {
+    autoHide: "never", // 永遠顯示
+    clickScrolling: true,
+  },
+  overflow: {
+    x: "hidden",
+    y: "scroll",
+  },
+});
+
+OverlayScrollbars(document.querySelector("#scroll-container"), {
+  scrollbars: {
+    autoHide: "never", // 永遠顯示
+    dragScroll: true,
+    clickScrolling: true,
+    visibility: "visible", // 明確強制顯示
+  },
+});
