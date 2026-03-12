@@ -60,48 +60,124 @@
         <h1 class="h1 hint-text">模型操作說明</h1>
         <p class="text-normal hint-text">
           -可使用滑鼠滾輪縮放<br />
-          -長按並左右拖曳可旋轉模型
+          -長按並左右拖曳可旋轉模型<br />
+          -右方捲動條可查看更多資訊
         </p>
       </div>
     </div>
 
     <!-- Layout -->
-    <div class="page-layout">
-      <!-- Left: 3D 模型 -->
-      <div class="left-view">
-        <canvas id="webgl"></canvas>
+    <div class="full-page-scroll">
+      <div class="page-layout">
+        <!-- Left: 3D 模型 -->
+        <div class="left-view">
+          <canvas id="webgl"></canvas>
+        </div>
+
+        <!-- Right: 資訊卡 -->
+        <div class="right-info">
+          <div class="info-card" id="info-card">
+            <h1>焦慮 ANXIETY CANDY</h1>
+
+            <div class="info-row">
+              <h3>成分</h3>
+              <p>
+                玉米糖漿：能量來源，加油，一起加班吧<br />
+                咖啡因：今晚通宵，除非心悸送醫<br />
+                對未來的擔憂：產品魅力所在<br />
+                特製酸味香精：考試一般令人頭皮發麻
+              </p>
+            </div>
+
+            <div class="info-row">
+              <h3>效果</h3>
+              <p>
+                倒就頭睡模式：再說吧，我先睡會兒<br />
+                卯起來幹模式：不行不行，趕不完就完蛋了<br />
+                災難片預告模式：世界毀滅吧
+              </p>
+            </div>
+
+            <div class="info-row">
+              <h3>每日攝取</h3>
+              <p>0，但你有這麼好命嗎？</p>
+            </div>
+
+            <div class="info-row">
+              <h3>保存方式</h3>
+              <p>交報告前（越近越香）</p>
+            </div>
+
+            <!-- 購買按鈕 -->
+            <div class="buy-section">
+              <a href="./anxiety-tear.html" class="btn buy-btn">手刀購買</a>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Right: 資訊卡 -->
-      <div class="right-info">
-        <div class="info-card" id="info-card">
-          <h1>焦慮 ANXIETY CANDY</h1>
-          <h3>成分</h3>
-          <p>
-            玉米糖漿：能量來源，加油，一起加班吧<br />
-            咖啡因：今晚通宵，除非心悸送醫<br />
-            對未來的擔憂：產品魅力所在<br />
-            特製酸味香精：考試一般令人頭皮發麻<br />
-            明膠：與電腦黏膩到天亮
-          </p>
+      <div class="card-scroll">
+        <div class="card-grid">
+          <!-- boring -->
+          <a class="candy-card" href="boring.html">
+            <div class="candy-card__imgwrap">
+              <img src="../../assets/img/boring.png" alt="無聊 BORING CANDY" />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
 
-          <h3>效果</h3>
-          <p>
-            倒就頭睡模式：再說吧，我先睡會兒<br />
-            卯起來幹模式：不行不行，趕不完就完蛋了<br />
-            災難片預告模式：世界毀滅吧
-          </p>
+          <!-- anxiety -->
+          <a class="candy-card" href="anxiety.html">
+            <div class="candy-card__imgwrap">
+              <img
+                src="../../assets/img/anxiety.png"
+                alt="焦慮 ANXIETY CANDY"
+              />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
 
-          <h3>建議每日攝取量</h3>
-          <p>0，但你有這麼好命嗎？</p>
+          <!--HAPPY -->
+          <a class="candy-card" href="happy.html">
+            <div class="candy-card__imgwrap">
+              <img src="../../assets/img/happy.png" alt="快樂 HAPPY CANDY" />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
 
-          <h3>保存方式</h3>
-          <p>交報告前（越近越香）</p>
-
-          <!-- 購買按鈕 -->
-          <div class="buy-section">
-            <a href="./anxiety-tear.html" class="btn buy-btn">手刀購買</a>
-          </div>
+          <!--SAD -->
+          <a class="candy-card" href="sad.html">
+            <div class="candy-card__imgwrap">
+              <img src="../../assets/img/sad.png" alt="難過 SAD CANDY" />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
+          <!--UPSET -->
+          <a class="candy-card" href="upset.html">
+            <div class="candy-card__imgwrap">
+              <img src="../../assets/img/upset.png" alt="沮喪 UPSET CANDY" />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
+          <!--TIRED -->
+          <a class="candy-card" href="tired.html">
+            <div class="candy-card__imgwrap">
+              <img src="../../assets/img/tired.png" alt="疲憊 TIRED CANDY" />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
         </div>
       </div>
     </div>
