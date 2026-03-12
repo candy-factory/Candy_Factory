@@ -1,18 +1,33 @@
+/*
+全局設定
+*/
+
+body {
+  overflow: hidden; /* 禁止一般滾動 */
+}
+
 canvas {
   touch-action: none;
 }
+
+/*
+layout
+*/
 
 /* 左 3/5（模型）右 2/5（資訊） */
 .page-layout {
   display: flex;
   width: 100vw;
-  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden; /* 第一屏禁止 touch 滾動 */
 }
+
 .left-view {
   width: 60vw;
   height: 100%;
   position: relative;
   overflow: hidden;
+  touch-action: none;
 }
 
 /* WebGL畫透明 */
@@ -30,12 +45,15 @@ canvas {
 /* 右半：完全透明（不蓋 3D） */
 .right-info {
   width: 40vw;
-  height: 100%;
-  display: grid;
-  place-items: center;
+  min-height: 100dvh; /* 保持第一屏高度 */
+  display: flex;
+  align-items: center; /* 垂直置中 */
+  justify-content: center;
+
+  overflow: hidden;
+
   color: #fff;
   background: transparent;
-  overflow: hidden;
   z-index: 2;
   transform: translateX(-5vw);
 }
@@ -44,25 +62,34 @@ canvas {
 .info-card {
   --tilt-rx: 0deg;
   --tilt-ry: 0deg;
+
   width: min(380px, 85%);
-  padding: 20px 24px 24px;
+  padding: 24px;
   border-radius: 18px;
 
   background: rgba(255, 255, 255, 0.06); /* 柔淡底 */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
 
   transform-style: preserve-3d;
-  transform: perspective(800px) rotateX(var(--tilt-rx)) rotateY(var(--tilt-ry));
+  transform: perspective(800px) rotateX(var(--tilt-rx)) rotateY(var(--tilt-ry))
+    translateY(0) scale(1);
+
   transition:
-    box-shadow 0.25s ease,
+    transform 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.35s ease,
     background 0.25s ease;
+
   position: relative;
 }
+
 .info-card:hover {
   background: rgba(255, 255, 255, 0.09);
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+
+  transform: perspective(800px) rotateX(var(--tilt-rx)) rotateY(var(--tilt-ry))
+    translateY(-6px) scale(1.02);
+
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
 }
 
 /* 邊緣柔光（很淡） */
@@ -87,18 +114,60 @@ canvas {
 
 /* 文字（略小以免擠出） */
 .right-info h1 {
-  font-size: clamp(20px, 2vw, 28px);
-  margin-bottom: 14px;
+  font-size: clamp(1rem, 2vw, 2rem);
+  margin-bottom: clamp(1rem, 1vw, 3rem);
+  font-weight: 700;
+  user-select: none;
 }
-.right-info h3 {
-  margin-top: 14px;
-  font-size: clamp(13px, 1.4vw, 15px);
+
+.info-row {
+  display: grid;
+  grid-template-columns: clamp(3rem, 7vw, 5rem) 1fr;
+  column-gap: clamp(0.5rem, 1vw, 1rem);
+  margin-top: clamp(0.5rem, 1vw, 0.8rem);
 }
-.right-info p {
-  line-height: 1.6;
-  margin-top: 5px;
-  font-size: clamp(11px, 1.3vw, 14px);
+
+.info-row h3 {
+  line-height: 1.5;
+  font-size: clamp(0.75rem, 1.4vw, 1rem);
+  font-weight: 600;
+  user-select: none;
 }
+
+.info-row p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: clamp(0.625rem, 1.3vw, 0.875rem);
+  user-select: none;
+}
+
+/* 購買按鈕區 */
+.buy-section {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.buy-btn {
+  text-decoration: none;
+
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.04)
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  transition:
+    transform 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+    background 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+    border-color 0.8s ease;
+}
+
+/* 
+hint 彈窗相關
+*/
 
 .hint-btn {
   position: fixed;
@@ -158,26 +227,147 @@ canvas {
   cursor: pointer;
 }
 
-/* 購買按鈕區（泡泡緩動版 */
-.buy-section {
-  margin-top: 28px;
-  text-align: center;
+/* 
+卡片
+*/
+
+.card-scroll {
+  position: relative;
+  width: 100vw;
+  height: 100%;
+
+  z-index: 5;
+  padding: 40px 0;
+  box-sizing: border-box;
 }
 
-.buy-btn {
-  text-decoration: none;
+.card-grid {
+  width: min(1100px, 90%);
+  margin: auto;
 
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255, 255, 255, 0.12),
-    rgba(255, 255, 255, 0.04)
-  );
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.candy-card {
+  display: block;
+  text-decoration: none;
+  color: white;
+
+  border-radius: 16px;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(6px);
+
   transition:
-    transform 0.8s cubic-bezier(0.25, 1, 0.5, 1),
-    box-shadow 0.8s cubic-bezier(0.25, 1, 0.5, 1),
-    background 0.8s cubic-bezier(0.25, 1, 0.5, 1),
-    border-color 0.8s ease;
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.candy-card__imgwrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.candy-card__meta {
+  padding-bottom: 20px;
+  text-align: center;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.candy-card__imgwrap img {
+  width: 70%;
+  height: auto;
+  object-fit: contain;
+
+  transition: transform 0.35s ease;
+}
+
+.candy-card:hover img {
+  transform: scale(1.08);
+}
+
+.candy-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* full-page-scroll 改成 scrollable */
+.full-page-scroll {
+  width: 100vw;
+  height: 100%;
+  overflow-y: auto; /* 開啟 scroll */
+  -webkit-overflow-scrolling: touch; /* 手機順滑滾動 */
+  position: relative;
+}
+
+/* 永遠顯示 scrollbar，不論裝置 */
+.full-page-scroll {
+  scrollbar-width: thin; /* Firefox */
+}
+
+.full-page-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.full-page-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.full-page-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .full-page-scroll {
+    scrollbar-width: thin; /* Firefox */
+  }
+
+  .full-page-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .full-page-scroll::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .full-page-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .info-card {
+    padding: 16px;
+  }
+
+  .buy-section {
+    margin-top: 14px;
+  }
+
+  .card-grid {
+    gap: 20px;
+  }
+}
+
+@media (hover: none) {
+  .info-card:hover {
+    transform: none;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35); /* 原始狀態 */
+  }
+  .candy-card:hover,
+  .candy-card:hover img {
+    transform: none;
+    box-shadow: none;
+  }
 }
