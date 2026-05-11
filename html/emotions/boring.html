@@ -19,7 +19,11 @@
     <link rel="stylesheet" href="../../css/base/style.css" />
 
     <!-- page styles -->
-    <link rel="stylesheet" href="../../css/emotions/boring.css" />
+    <link rel="stylesheet" href="../../css/emotions/emotions.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/overlayscrollbars/styles/overlayscrollbars.min.css"
+    />
   </head>
 
   <body>
@@ -48,5 +52,141 @@
       </div>
       <!--nav end-->
     </div>
+
+    <!-- 操作說明按鈕 -->
+    <button class="btn hint-btn" id="openHint">操作說明</button>
+
+    <!-- 操作說明視窗 -->
+    <div class="hint-modal" id="hintModal">
+      <div class="hint-modal-content">
+        <button class="hint-modal-close" id="closeHint">×</button>
+        <h1 class="h1 hint-text">模型操作說明</h1>
+        <p class="text-normal hint-text">
+          -可使用滑鼠滾輪縮放<br />
+          -長按並左右拖曳可旋轉模型<br />
+          -右方捲動條可查看更多資訊
+        </p>
+      </div>
+    </div>
+
+    <!-- scroll container -->
+    <div id="scroll-container">
+      <div class="page-layout">
+        <!-- Left: 3D 模型 -->
+        <div class="left-view">
+          <canvas id="webgl"></canvas>
+        </div>
+
+        <!-- Right: 資訊卡 -->
+        <div class="right-info">
+          <div class="info-card" id="info-card">
+            <h1>無聊 BORING CANDY</h1>
+
+            <div class="info-row">
+              <h3>成分</h3>
+              <p>
+                空氣：100%純天然不知道<br />
+                哪來的哈欠：會傳染<br />
+              </p>
+            </div>
+
+            <div class="info-row">
+              <h3>效果</h3>
+              <p>
+                思考人生意義模式：別想了，想不通的<br />
+                打掃機器人模式：五分鐘後停止
+              </p>
+            </div>
+
+            <div class="info-row">
+              <h3>食用說明</h3>
+              <p>
+                當你看到這行字，你已經吃不到糖果了——不好笑嗎？
+                那很好了，連情緒都懶得顯示。<br />絕對不是說明不好笑。
+              </p>
+            </div>
+
+            <div class="info-row">
+              <h3>保存方式</h3>
+              <p>擺爛</p>
+            </div>
+
+            <!-- 購買按鈕 -->
+            <div class="buy-section">
+              <a href="./anxiety-tear.html" class="btn buy-btn">手刀購買</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-scroll">
+        <div class="card-grid">
+          <!-- boring -->
+          <a class="candy-card" href="boring.html">
+            <div class="candy-card__imgwrap">
+              <img src="../../assets/img/boring.png" alt="無聊 BORING CANDY" />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
+
+          <!-- anxiety -->
+          <a class="candy-card" href="anxiety.html">
+            <div class="candy-card__imgwrap">
+              <img
+                src="../../assets/img/anxiety.png"
+                alt="焦慮 ANXIETY CANDY"
+              />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
+
+          <!--HAPPY -->
+          <a class="candy-card" href="happy.html">
+            <div class="candy-card__imgwrap">
+              <img src="../../assets/img/happy.png" alt="快樂 HAPPY CANDY" />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
+
+          <!--SAD -->
+          <a class="candy-card" href="sad.html">
+            <div class="candy-card__imgwrap">
+              <img src="../../assets/img/sad.png" alt="難過 SAD CANDY" />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
+          <!--UPSET -->
+          <a class="candy-card" href="upset.html">
+            <div class="candy-card__imgwrap">
+              <img src="../../assets/img/upset.png" alt="沮喪 UPSET CANDY" />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
+          <!--TIRED -->
+          <a class="candy-card" href="tired.html">
+            <div class="candy-card__imgwrap">
+              <img src="../../assets/img/tired.png" alt="疲憊 TIRED CANDY" />
+            </div>
+            <div class="candy-card__meta">
+              <span>LEARN MORE</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D 模型 -->
+    <script type="module" src="../../js/emotions/boring.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars/browser/overlayscrollbars.browser.es6.min.js"></script>
   </body>
 </html>
