@@ -1,7 +1,7 @@
 import * as THREE from "https://esm.sh/three";
 import { GLTFLoader } from "https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js";
 import { initHintModal, initInfoCardTilt } from "./1_base.js";
-import { initCandyZoom } from "../emotions/2_initCandyZoom.js";
+import { initCandyZoom } from "./2_initCandyZoom.js";
 
 /* =====================================================
    Renderer（全螢幕透明）
