@@ -3,11 +3,11 @@
 */
 
 body {
-  overflow-y: none; /* 禁止一般滾動 */
+  overflow-y: visible; /* 禁止一般滾動 */
 }
 
 canvas {
-  touch-action: none;
+  pointer-events: none;
 }
 
 /*
@@ -180,7 +180,7 @@ hint 彈窗相關
 .hint-modal {
   position: fixed;
   inset: 0;
-  z-index: 999;
+  z-index: 1000;
   background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
