@@ -144,7 +144,7 @@
 
 .enter-shop.show {
   opacity: 1;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .shop-btn {
